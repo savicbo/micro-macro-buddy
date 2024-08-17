@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="mmfavicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 
     <title>Micro Macro Buddy</title>
     <style>
@@ -98,15 +99,31 @@ h2 {
 }
 
 .selection-wrapper select {
-    width: 100%;
-    padding: 5px; /* Reduced padding for smaller height */
-    font-size: 14px; /* Reduced font size for more compact dropdowns */
+    flex: 1;
+    padding: 3px 20px 3px 10px;
+    font-size: 14px;
     font-weight: 400;
     color: rgb(29, 29, 27);
     border: 2px solid #000;
     border-radius: 5px;
     box-sizing: border-box;
+    min-width: 200px;
+    background-color: #fff; /* Consistent background color */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center
 }
+
+/* Remove any custom styling in Internet Explorer and Edge */
+.selection-wrapper select::-ms-expand {
+    display: block; /* Ensure the arrow is visible */
+}
+
+
+
 
 /* Coordinate Input Styles */
 .coordinate-input-wrapper {
