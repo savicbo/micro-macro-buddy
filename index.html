@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="mmfavicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>Micro Macro Buddy</title>
+    <style>
+/* General Body Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background: url('mmbg.jpg') no-repeat center center fixed;
+    background-size: 150%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Font and General Styles */
+body, select, input, button, label {
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(29, 29, 27);
+    line-height: 20px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+label {
+    font-size: 14px; /* Adjust this value for smaller text */
+    font-weight: 400;
+    font-family: 'Barlow', sans-serif; /* Ensures the correct font is applied */
+    color: rgb(29, 29, 27);
+    margin-bottom: 3px;
+    display: block;
+}
+
+/* Container Styling */
+.container {
+    max-width: 70%;
+    padding: 40px 50px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 5px solid #000;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2 {
+    font-family: 'Bangers', sans-serif;
+    font-weight: 500;
+    color: white;
+    text-shadow: 2px 2px 0px rgb(0, 0, 0);
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: rgb(0, 0, 0);
+    margin: 0;
+}
+
+h1 {
+    font-size: 60px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+h2 {
+    font-size: 35px;
+    text-align: left;
+    letter-spacing: 2.5px;
+    margin-bottom: 7px; 
+    margin-top: 45px; 
+    line-height: 1.2em;
+}
+
+/* Question Styling */
+.question-wrapper {
+    font-family: 'Barlow', sans-serif;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+/* Dropdown Styles */
+.selection-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.selection-wrapper > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.selection-wrapper select {
+    width: 100%;
+    padding: 5px; /* Reduced padding for smaller height */
+    font-size: 14px; /* Reduced font size for more compact dropdowns */
+    font-weight: 400;
+    color: rgb(29, 29, 27);
+    border: 2px solid #000;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Coordinate Input Styles */
+.coordinate-input-wrapper {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.coordinate-input-wrapper input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(29, 29, 27);
+    border: 2px solid #000;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Button Styles */
+button {
+    background-color: #d31f26;
+    color: white;
+    padding: 16px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    margin-top: 40px;
+    display: block;
+    width: 80%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #000; /* Turns black on hover */
+}
+
+#next-question-btn {
+    background-color: #000;
+    color: white;
+    padding: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    display: none;
+    transition: background-color 0.3s ease;
+    margin-top: 40px;
+    width: 80%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#next-question-btn:hover {
+    background-color: #444;
+}
+
+/* Subtle Option Link */
+.subtle-options-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adjust spacing between links */
+    margin-top: 20px;
+}
+
+.subtle-option {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.subtle-option:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+
+/* Result Styles */
+#result {
+    margin: 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Barlow', sans-serif; /* Ensure the font matches the site */
+    color: rgb(29, 29, 27); /* Match the site color */
+}
+
+#completion-message {
+    font-family: 'Bangers', sans-serif;
+    font-weight: 500;
+    color: white;
+    text-shadow: 2px 2px 0px rgb(0, 0, 0);
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: rgb(0, 0, 0);
+    margin: 0;
+    font-size: 35px;
+    text-align: center;
+    letter-spacing: 2.5px;
+    margin-bottom: 7px; 
+    margin-top: 45px; 
+    line-height: 1.2em;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Micro Macro Buddy</h1>
+        <div class="selection-wrapper">
+            <div>
+                <label for="game-select">Select Game:</label>
+                <select id="game-select">
+                    <option value="Crime City">Crime City</option>
+                    <option value="Full House">Full House</option>
+                    <option value="All In">All In</option>
+                    <option value="Showdown">Showdown</option>
+                    <option value="Bonus Pack">5th Game (placeholder)</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="case-select">Select Case:</label>
+                <select id="case-select">
+                    <option value="Set 1">Case 1</option>
+                    <option value="Set 2">Case 2</option>
+                    <option value="Set 3">Case 3</option>
+                    <option value="Set 4">Case 4</option>
+                </select>
+            </div>
+        </div>
+
+        <h2 id="question-header">Question 1:</h2>
+        <div class="question-wrapper">Where is the first clue?</div>
+
+
+        <div class="coordinate-input-wrapper">
+            <!-- <label for="coordinate-input">Enter Coordinate (e.g., A5):</label> -->
+            <input type="text" id="coordinate-input" placeholder="Enter coordinate (e.g., A5)">
+        </div>
+
+        <button id="check-answer-btn">Check Answer</button>
+
+        <div id="result"></div>
+
+        <button id="next-question-btn">Next Question</button>
+
+        <div class="subtle-options-container">
+            <div class="subtle-option" id="previous-question" style="display: none;">Previous Question</div>
+            <div class="subtle-option" id="see-answer">See Answer</div>
+            <div class="subtle-option" id="skip-question">Skip Question</div>
+        </div>
+        
+
+        
+    </div>
+
+ 
+    <script>
+        const answerData = {
+            "Crime City": {
+                "Set 1": [
+                    {
+                        "question": "Where is the first clue?",
+                        "answers": ["A5"]
+                    }
+                ],
+                "Set 2": [
+                    {
+                        "question": "Where is the hidden weapon?",
+                        "answers": ["D3", "E8", "F12"]
+                    }
+                ]
+            },
+            "Full House": {
+                "Set 1": [
+                    {
+                        "question": "Where is the detective?",
+                        "answers": ["G1", "H7", "I9"]
+                    }
+                ]
+            }
+        };
+
+        let currentQuestion = 0;
+        let selectedGame = document.getElementById('game-select').value;
+        let selectedCase = document.getElementById('case-select').value;
+
+        // Update selected game and case on change
+        document.getElementById('game-select').addEventListener('change', function () {
+            selectedGame = this.value;
+            resetQuiz();
+        });
+
+        document.getElementById('case-select').addEventListener('change', function () {
+            selectedCase = this.value;
+            resetQuiz();
+        });
+
+        // Function to clean and standardize user input
+        function cleanInput(input) {
+            return input
+                .toUpperCase() // Convert to uppercase
+                .replace(/[^A-Z0-9,]/g, '') // Remove unexpected characters (keep letters, numbers, and commas)
+                .split(',') // Split input by commas
+                .map(answer => answer.trim()) // Trim each answer
+                .filter(answer => answer !== ""); // Remove empty answers
+        }
+
+        // Function to check if two arrays contain the same elements (ignoring order)
+        function arraysEqual(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            const sorted1 = arr1.slice().sort();
+            const sorted2 = arr2.slice().sort();
+            return sorted1.every((value, index) => value === sorted2[index]);
+        }
+
+        // Function to check the answer
+        document.getElementById('check-answer-btn').addEventListener('click', function () {
+            const userInput = cleanInput(document.getElementById('coordinate-input').value);
+            const correctAnswers = answerData[selectedGame][selectedCase][currentQuestion].answers;
+
+            if (arraysEqual(userInput, correctAnswers)) {
+                document.getElementById('result').innerText = "Correct!";
+                document.getElementById('result').style.color = "green";
+                document.getElementById('check-answer-btn').style.display = "none";
+                document.getElementById('skip-question').style.display = "none"; // Hide the "Skip Question" button
+                document.getElementById('see-answer').style.display = "none"; // Hide the "See Answer" link
+                document.getElementById('next-question-btn').style.display = "block"; // Show the "Next Question" button
+            } else {
+                document.getElementById('result').innerText = "Incorrect, try again!";
+                document.getElementById('result').style.color = "red";
+            }
+        });
+
+        // Function to move to the next question
+        document.getElementById('next-question-btn').addEventListener('click', function () {
+            moveToNextQuestion();
+        });
+
+        // Function to skip to the next question
+        document.getElementById('skip-question').addEventListener('click', function () {
+            moveToNextQuestion();
+        });
+
+        // Function to show the correct answer(s)
+        document.getElementById('see-answer').addEventListener('click', function () {
+            const correctAnswers = answerData[selectedGame][selectedCase][currentQuestion].answers.join(', ');
+            document.getElementById('result').innerText = `Answer: ${correctAnswers}`;
+            document.getElementById('result').style.color = "rgb(29, 29, 27)"; // Match site color
+            document.getElementById('result').style.fontFamily = "'Barlow', sans-serif"; // Match site font
+        });
+
+        // Function to go back to the previous question
+        document.getElementById('previous-question').addEventListener('click', function () {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateQuestion();
+            }
+        });
+
+        function updateQuestion() {
+    const questionData = answerData[selectedGame][selectedCase][currentQuestion];
+    document.getElementById('question-header').innerText = `Question ${currentQuestion + 1}:`;
+    document.querySelector('.question-wrapper').innerText = questionData.question;
+    document.getElementById('coordinate-input').value = "";
+    document.getElementById('result').innerText = "";
+    document.getElementById('check-answer-btn').style.display = "block"; // Show the Check Answer button
+    document.getElementById('skip-question').style.display = "block"; // Show the Skip Question option
+    document.getElementById('see-answer').style.display = "block"; // Show the See Answer option
+    document.getElementById('next-question-btn').style.display = "none"; // Hide the Next Question button
+    updateNavigationButtons();
+}
+
+function resetQuiz() {
+    currentQuestion = 0;
+    document.getElementById('question-header').innerText = "Question 1:";
+    document.querySelector('.question-wrapper').innerText = answerData[selectedGame][selectedCase][0].question;
+    document.getElementById('coordinate-input').value = "";
+    document.getElementById('result').innerText = "";
+    document.getElementById('check-answer-btn').style.display = "block"; // Show the Check Answer button
+    document.getElementById('skip-question').style.display = "block"; // Show the Skip Question option
+    document.getElementById('see-answer').style.display = "block"; // Show the See Answer option
+    document.getElementById('next-question-btn').style.display = "none"; // Hide the Next Question button
+    updateNavigationButtons();
+}
+
+function moveToNextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < answerData[selectedGame][selectedCase].length) {
+        updateQuestion();
+    } else {
+        document.getElementById('question-header').innerText = "";
+        document.querySelector('.question-wrapper').innerHTML = 
+    `<div id="completion-message">Congratulations, you've solved the case!<br>Select a new case to continue the fun!</div>`;
+document.getElementById('coordinate-input').style.display = "none";
+        document.getElementById('check-answer-btn').style.display = "none";
+        document.getElementById('see-answer').style.display = "none";
+        document.getElementById('skip-question').style.display = "none";
+        document.getElementById('next-question-btn').style.display = "none";
+        document.getElementById('previous-question').style.display = "block";
+    }
+}
+
+
+
+        function updateNavigationButtons() {
+            // Show or hide the "Back to Previous Question" link
+            if (currentQuestion > 0) {
+                document.getElementById('previous-question').style.display = 'block';
+            } else {
+                document.getElementById('previous-question').style.display = 'none';
+            }
+        }
+    </script>
+
+    
+    
+    
+</body>
+
+</html>
