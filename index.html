@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 
-    <title>Micro Macro Buddy</title>
+    <title>Joe's Micro Macro Buddy</title>
     <style>
 /* General Body Styles */
 body {
@@ -19,7 +19,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    position: relative; /* Add this */
 }
 
 /* Font and General Styles */
@@ -67,7 +68,7 @@ h1 {
     font-size: 60px;
     text-align: center;
     margin-bottom: 30px;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 h2 {
@@ -237,6 +238,19 @@ button:hover {
     line-height: 1.2em;
 }
 
+.footer-text {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: #d31f26;
+}
+
+
+
 
 
     </style>
@@ -244,6 +258,8 @@ button:hover {
 
 <body>
     <div class="container">
+
+        <h1>Joe's</h1>
         <h1>Micro Macro Buddy</h1>
         <div class="selection-wrapper">
             <div>
@@ -292,6 +308,7 @@ button:hover {
 
         
     </div>
+    <!-- <div class="footer-text">For Joe</div> -->
 
  
     <script>
