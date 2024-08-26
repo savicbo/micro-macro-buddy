@@ -50,6 +50,7 @@ body, select, input, button, label {
     box-sizing: border-box;
 }
 
+
 label {
     font-size: 14px;
     font-weight: 400;
@@ -70,6 +71,8 @@ label {
     margin: 15px auto 0;
     box-sizing: border-box;
 }
+
+
 @media (max-width: 750px) {
     .container {
         padding-left: 15px;
@@ -228,6 +231,12 @@ button:hover {
     line-height: 1.2em;
 }
 
+.helper-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
 /* Media Queries for Larger Screens */
 @media (min-width: 768px) {
 
@@ -239,10 +248,11 @@ button:hover {
 
     .container {
         width: 70%;
-        max-width: 500px;
+        max-width: 700px;
         padding: 15px 60px 25px 60px;
         border: 5px solid #000;
         border-radius: 15px;
+        margin-bottom: 30px;
     }
 
 
@@ -367,6 +377,7 @@ button:hover {
 </head>
 
 <body>
+
     <div class="container">
 
         <h1>Joe's<br>Micro Macro Buddy</h1>
@@ -374,21 +385,14 @@ button:hover {
             <div>
                 <label for="game-select">Select Game:</label>
                 <select id="game-select">
-                    <option value="Crime City">Crime City</option>
-                    <option value="Full House">Full House</option>
-                    <option value="All In">All In</option>
-                    <option value="Showdown">Showdown</option>
-                    <option value="Bonus Pack">5th Game (placeholder)</option>
+                    <!-- Options will be dynamically populated by JavaScript -->
                 </select>
             </div>
-
+        
             <div>
                 <label for="case-select">Select Case:</label>
                 <select id="case-select">
-                    <option value="Set 1">Case 1</option>
-                    <option value="Set 2">Case 2</option>
-                    <option value="Set 3">Case 3</option>
-                    <option value="Set 4">Case 4</option>
+                    <!-- Options will be dynamically populated by JavaScript -->
                 </select>
             </div>
         </div>
@@ -400,7 +404,10 @@ button:hover {
         <div class="coordinate-input-wrapper">
             <!-- <label for="coordinate-input">Enter Coordinate (e.g., A5):</label> -->
             <input type="text" id="coordinate-input" placeholder="Enter coordinate (e.g., A5)">
+            <div id="coordinate-helper" class="helper-text"></div>
         </div>
+
+        
 
         <button id="check-answer-btn">Check Answer</button>
 
@@ -416,166 +423,893 @@ button:hover {
         
 
         
-    </div>
-    <!-- <div class="footer-text">For Joe</div> -->
+</div>
 
  
     <script>
         const answerData = {
-            "Crime City": {
-                "Set 1": [
-                    {
-                        "question": "Where is the first clue?",
-                        "answers": ["A5"]
-                    }
-                ],
-                "Set 2": [
-                    {
-                        "question": "Where is the hidden weapon?",
-                        "answers": ["D3", "E8", "F12"]
-                    }
-                ]
-            },
-            "Full House": {
-                "Set 1": [
-                    {
-                        "question": "Where is the detective?",
-                        "answers": ["G1", "H7", "I9"]
-                    }
-                ]
-            }
-        };
-
-        let currentQuestion = 0;
-        let selectedGame = document.getElementById('game-select').value;
-        let selectedCase = document.getElementById('case-select').value;
-
-        // Update selected game and case on change
-        document.getElementById('game-select').addEventListener('change', function () {
-            selectedGame = this.value;
-            resetQuiz();
-        });
-
-        document.getElementById('case-select').addEventListener('change', function () {
-            selectedCase = this.value;
-            resetQuiz();
-        });
-
-        // Function to clean and standardize user input
-        function cleanInput(input) {
-            return input
-                .toUpperCase() // Convert to uppercase
-                .replace(/[^A-Z0-9,]/g, '') // Remove unexpected characters (keep letters, numbers, and commas)
-                .split(',') // Split input by commas
-                .map(answer => answer.trim()) // Trim each answer
-                .filter(answer => answer !== ""); // Remove empty answers
-        }
-
-        // Function to check if two arrays contain the same elements (ignoring order)
-        function arraysEqual(arr1, arr2) {
-            if (arr1.length !== arr2.length) return false;
-            const sorted1 = arr1.slice().sort();
-            const sorted2 = arr2.slice().sort();
-            return sorted1.every((value, index) => value === sorted2[index]);
-        }
-
-        // Function to check the answer
-        document.getElementById('check-answer-btn').addEventListener('click', function () {
-            const userInput = cleanInput(document.getElementById('coordinate-input').value);
-            const correctAnswers = answerData[selectedGame][selectedCase][currentQuestion].answers;
-
-            if (arraysEqual(userInput, correctAnswers)) {
-                document.getElementById('result').innerText = "Correct!";
-                document.getElementById('result').style.color = "green";
-                document.getElementById('check-answer-btn').style.display = "none";
-                document.getElementById('skip-question').style.display = "none"; // Hide the "Skip Question" button
-                document.getElementById('see-answer').style.display = "none"; // Hide the "See Answer" link
-                document.getElementById('next-question-btn').style.display = "block"; // Show the "Next Question" button
-            } else {
-                document.getElementById('result').innerText = "Incorrect, try again!";
-                document.getElementById('result').style.color = "red";
-            }
-        });
-
-        // Function to move to the next question
-        document.getElementById('next-question-btn').addEventListener('click', function () {
-            moveToNextQuestion();
-        });
-
-        // Function to skip to the next question
-        document.getElementById('skip-question').addEventListener('click', function () {
-            moveToNextQuestion();
-        });
-
-        // Function to show the correct answer(s)
-        document.getElementById('see-answer').addEventListener('click', function () {
-            const correctAnswers = answerData[selectedGame][selectedCase][currentQuestion].answers.join(', ');
-            document.getElementById('result').innerText = `Answer: ${correctAnswers}`;
-            document.getElementById('result').style.color = "rgb(29, 29, 27)"; // Match site color
-            document.getElementById('result').style.fontFamily = "'Barlow', sans-serif"; // Match site font
-        });
-
-        // Function to go back to the previous question
-        document.getElementById('previous-question').addEventListener('click', function () {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                updateQuestion();
-            }
-        });
-
-        function updateQuestion() {
-    const questionData = answerData[selectedGame][selectedCase][currentQuestion];
-    document.getElementById('question-header').innerText = `Question ${currentQuestion + 1}:`;
-    document.querySelector('.question-wrapper').innerText = questionData.question;
-    document.getElementById('coordinate-input').value = "";
-    document.getElementById('result').innerText = "";
-    document.getElementById('check-answer-btn').style.display = "block"; // Show the Check Answer button
-    document.getElementById('skip-question').style.display = "block"; // Show the Skip Question option
-    document.getElementById('see-answer').style.display = "block"; // Show the See Answer option
-    document.getElementById('next-question-btn').style.display = "none"; // Hide the Next Question button
-    updateNavigationButtons();
+  "All In": {
+    "All In": [
+      {
+        "question": "What misfortunes have befallen the other three riders? (2/8)",
+        "answers": [
+          "L8"
+        ]
+      },
+      {
+        "question": "Which millionaire bet on which horse? (3/8)",
+        "answers": [
+          "J8",
+          "K8",
+          "N6"
+        ]
+      },
+      {
+        "question": "How was team 1 sabotaged and which millionaire is behind it? (4/8)",
+        "answers": [
+          "O7",
+          "N5"
+        ]
+      },
+      {
+        "question": "How was team 2 sabotaged and which millionaire is behind it? (5/8)",
+        "answers": [
+          "L8",
+          "N7",
+          "I5"
+        ]
+      },
+      {
+        "question": "How was team 3 sabotaged and which millionaire is behind it? (6/8)",
+        "answers": [
+          "M8",
+          "P5"
+        ]
+      },
+      {
+        "question": "Why was the horse trainer willing to sabotage her own horse for money? (7/8)",
+        "answers": [
+          "J6"
+        ]
+      },
+      {
+        "question": "Who knew the outsider would win - and how? (8/8)",
+        "answers": [
+          "J8",
+          "K8",
+          "I5",
+          "M7",
+          "N5"
+        ]
+      }
+    ],
+    "I Know What You Did Last Saturday": [
+      {
+        "question": "Is there a suspect? (2/9)",
+        "answers": [
+          "K7",
+          "N8",
+          "O7"
+        ]
+      },
+      {
+        "question": "Do the three victims have a common interest? (3/9)",
+        "answers": [
+          "O7",
+          "M8",
+          "J8"
+        ]
+      },
+      {
+        "question": "Where did the victims play together the previous saturday? (4/9)",
+        "answers": [
+          "O6"
+        ]
+      },
+      {
+        "question": "In which three places did the friends celebrate their victory? (5/9)",
+        "answers": [
+          "N6",
+          "K6",
+          "L6"
+        ]
+      },
+      {
+        "question": "What happened on the way home? (6/9)",
+        "answers": [
+          "J5",
+          "I5"
+        ]
+      },
+      {
+        "question": "What happened to the victim and where did the hook killer come from? (7/9)",
+        "answers": [
+          "I5",
+          "I6"
+        ]
+      },
+      {
+        "question": "How did the hook killer know his victims? (8/9)",
+        "answers": [
+          "O6"
+        ]
+      },
+      {
+        "question": "Save the friend! Find her flat! (9/9)",
+        "answers": [
+          "O5"
+        ]
+      }
+    ],
+    "Murder In The Wimmersberg Villa": [
+      {
+        "question": "Find the villa! (2/12)",
+        "answers": [
+          "P7",
+          "P8"
+        ]
+      },
+      {
+        "question": "What could have been the cause of death? (3/12)",
+        "answers": [
+          "P8"
+        ]
+      },
+      {
+        "question": "How many people were at the property? (4/12)",
+        "answers": [
+          "P7",
+          "P8"
+        ]
+      },
+      {
+        "question": "Was there a fight in the villa before dinner? (5/12)",
+        "answers": [
+          "P8"
+        ]
+      },
+      {
+        "question": "What event did the Wimmersberg couple attend the night before? (6/12)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Where did the four of them go after the performance? (7/12)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Who did the couple meet on their way home? (8/12)",
+        "answers": [
+          "N7"
+        ]
+      },
+      {
+        "question": "Did the couple go home together? (9/12)",
+        "answers": [
+          "N7"
+        ]
+      },
+      {
+        "question": "What happened at the Richard's workplace? (10/12)",
+        "answers": [
+          "N5",
+          "N6"
+        ]
+      },
+      {
+        "question": "Where was Richard before work? (11/12)",
+        "answers": [
+          "L5"
+        ]
+      },
+      {
+        "question": "Who is the murderer? (12/12)",
+        "answers": [
+          "K6",
+          "O5"
+        ]
+      }
+    ],
+    "Pandemic": [
+      {
+        "question": "Who did the woman catch it from? (2/4)",
+        "answers": [
+          "L6",
+          "M7"
+        ]
+      },
+      {
+        "question": "Follow the chain of contact and find up to 10 more infected people! Answer A1 as there is no coordinate for this one. (3/4)",
+        "answers": [
+          "A1"
+        ]
+      },
+      {
+        "question": "Where did the virus pass from the animal kingdom to humans? (4/4)",
+        "answers": [
+          "N8"
+        ]
+      }
+    ],
+    "Revenge Of The Small Guy": [
+      {
+        "question": "What was the victim knocked down with and who is a key suspect? (2/6)",
+        "answers": [
+          "O7",
+          "O8"
+        ]
+      },
+      {
+        "question": "Where is the suspect now? (3/6)",
+        "answers": [
+          "O8"
+        ]
+      },
+      {
+        "question": "What mode of transport did the suspect use to get to the east of the city? (4/6)",
+        "answers": [
+          "P6"
+        ]
+      },
+      {
+        "question": "Where did the bus come from? (5/6)",
+        "answers": [
+          "J7"
+        ]
+      },
+      {
+        "question": "What is the perpetrator's motive? (6/6)",
+        "answers": [
+          "J6",
+          "J7"
+        ]
+      }
+    ],
+    "Strawberry, Lemon, Chocolate": [
+      {
+        "question": "Search the villa for the reason why Heinrich is not happy! (2/7)",
+        "answers": [
+          "O8"
+        ]
+      },
+      {
+        "question": "Where was the painting acquired? (3/7)",
+        "answers": [
+          "J6"
+        ]
+      },
+      {
+        "question": "Where did the auction house get the painting? (4/7)",
+        "answers": [
+          "J8"
+        ]
+      },
+      {
+        "question": "Are there any inconsistencies in the household liquidation? (5/7)",
+        "answers": [
+          "J8"
+        ]
+      },
+      {
+        "question": "Where did the bearer of the parcel come from? (6/7)",
+        "answers": [
+          "O5"
+        ]
+      },
+      {
+        "question": "Where did the forget receive his payment? (7/7)",
+        "answers": [
+          "P5"
+        ]
+      }
+    ],
+    "The Blood-red Traffic Light": [
+      {
+        "question": "Find the scene of the incident! (2/7)",
+        "answers": [
+          "O8"
+        ]
+      },
+      {
+        "question": "What were all the things the victim did that day? Provide the first and last coordinates of his day. (3/7)",
+        "answers": [
+          "K6",
+          "N7"
+        ]
+      },
+      {
+        "question": "What family trait might have gotten Kasimir into trouble? (4/7)",
+        "answers": [
+          "K7"
+        ]
+      },
+      {
+        "question": "Where were Kasimirs parents earlier? (5/7)",
+        "answers": [
+          "O6"
+        ]
+      },
+      {
+        "question": "What did the brother do beforehand? (6/7)",
+        "answers": [
+          "P5"
+        ]
+      },
+      {
+        "question": "Why was Kasimir pushed and where is the culprit now? (7/7)",
+        "answers": [
+          "N8"
+        ]
+      }
+    ],
+    "The Bobble Hat": [
+      {
+        "question": "Find Fernando at the doughnut shop! (2/5)",
+        "answers": [
+          "K8"
+        ]
+      },
+      {
+        "question": "Find Fernando at the hospital! (3/5)",
+        "answers": [
+          "K7"
+        ]
+      },
+      {
+        "question": "What happened in between? How did the hat get lost? (4/5)",
+        "answers": [
+          "K7"
+        ]
+      },
+      {
+        "question": "Where are the thieves sitting and what have they done with the hat? (5/5)",
+        "answers": [
+          "M7",
+          "N7"
+        ]
+      }
+    ],
+    "The Courier": [
+      {
+        "question": "Find the furniture store! (2/8)",
+        "answers": [
+          "M5",
+          "N5"
+        ]
+      },
+      {
+        "question": "What happened to the courier? (3/8)",
+        "answers": [
+          "N6"
+        ]
+      },
+      {
+        "question": "Who are the perpetrators and where did they flee to? (4/8)",
+        "answers": [
+          "N6",
+          "O6",
+          "O7"
+        ]
+      },
+      {
+        "question": "How did the perpetrators know about the money? (5/8)",
+        "answers": [
+          "K6"
+        ]
+      },
+      {
+        "question": "Who is the informant? (6/8)",
+        "answers": [
+          "K6"
+        ]
+      },
+      {
+        "question": "Why was there no money in the briefcase? (7/8)",
+        "answers": [
+          "M5"
+        ]
+      },
+      {
+        "question": "Where is the money and where is the courier? (8/8)",
+        "answers": [
+          "M5",
+          "J8"
+        ]
+      }
+    ],
+    "The Dead Swan": [
+      {
+        "question": "Find the murder weapon! (2/8)",
+        "answers": [
+          "O5"
+        ]
+      },
+      {
+        "question": "Where did the victim work? (3/8)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Was there anything unusual about the performance? (4/8)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Where was the injured woman before the performance? (5/8)",
+        "answers": [
+          "K7"
+        ]
+      },
+      {
+        "question": "How did the injury happen? (6/8)",
+        "answers": [
+          "L5"
+        ]
+      },
+      {
+        "question": "What did Annika experience on her way home after the ballet performance? (7/8)",
+        "answers": [
+          "O7",
+          "N7"
+        ]
+      },
+      {
+        "question": "Who is the killer and where is he now? (8/8)",
+        "answers": [
+          "N8",
+          "O8",
+          "P5"
+        ]
+      }
+    ],
+    "The Final Plunge": [
+      {
+        "question": "Was it an accident or was there more to it? (2/8)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Where was the mechanic hired to tamper with the car? (3/8)",
+        "answers": [
+          "M6"
+        ]
+      },
+      {
+        "question": "Who did the woman meet beforehand? (4/8)",
+        "answers": [
+          "N7"
+        ]
+      },
+      {
+        "question": "Where did Lola get the bag and who did she meet beforehand? (5/8)",
+        "answers": [
+          "M7",
+          "K6"
+        ]
+      },
+      {
+        "question": "Where did the money for the tampering of the car come from? (6/8)",
+        "answers": [
+          "J6"
+        ]
+      },
+      {
+        "question": "Why did the three of them plan the murder? (7/8)",
+        "answers": [
+          "I7",
+          "J8",
+          "K7"
+        ]
+      },
+      {
+        "question": "Where are the three women now? (8/8)",
+        "answers": [
+          "I6"
+        ]
+      }
+    ],
+    "The Missing Son": [
+      {
+        "question": "Find the cafe! (2/10)",
+        "answers": [
+          "N6"
+        ]
+      },
+      {
+        "question": "Where did Jackie and Donnie meet and what did they do there? (3/10)",
+        "answers": [
+          "K5",
+          "L6",
+          "K6"
+        ]
+      },
+      {
+        "question": "What was Donnie doing before they met up? (4/10)",
+        "answers": [
+          "P6"
+        ]
+      },
+      {
+        "question": "What happened to the van? (5/10)",
+        "answers": [
+          "M8"
+        ]
+      },
+      {
+        "question": "Where did the motorbike gangsters take the van? (6/10)",
+        "answers": [
+          "I8"
+        ]
+      },
+      {
+        "question": "What happened to the motorbike gangsters? (7/10)",
+        "answers": [
+          "I7"
+        ]
+      },
+      {
+        "question": "Who were the motorbike gangsters that attacked the van? (8/10)",
+        "answers": [
+          "N7"
+        ]
+      },
+      {
+        "question": "Where were the killers hired? (9/10)",
+        "answers": [
+          "L7"
+        ]
+      },
+      {
+        "question": "Find the mafia boss' home! (10/10)",
+        "answers": [
+          "P7"
+        ]
+      }
+    ],
+    "The Prize Pumpkin": [
+      {
+        "question": "Find the site of the explosion! (2/9)",
+        "answers": [
+          "I6"
+        ]
+      },
+      {
+        "question": "Who detonated the bomb? (3/9)",
+        "answers": [
+          "I6"
+        ]
+      },
+      {
+        "question": "Which event could be the reason for the blast? (4/9)",
+        "answers": [
+          "I6"
+        ]
+      },
+      {
+        "question": "Did one of Herbie's two competitors set off the explosion? (5/9)",
+        "answers": [
+          "I6",
+          "L7",
+          "L6"
+        ]
+      },
+      {
+        "question": "Why have Herbie's pumpkins been so successful so far? (6/9)",
+        "answers": [
+          "M8"
+        ]
+      },
+      {
+        "question": "Did anyone know about Herbie's secret? (7/9)",
+        "answers": [
+          "J6",
+          "M8"
+        ]
+      },
+      {
+        "question": "What angers Dr. Lizer so much about Herbie's Method? (8/9)",
+        "answers": [
+          "I6"
+        ]
+      },
+      {
+        "question": "What did Dr. Lizer do after his discovery? (9/9)",
+        "answers": [
+          "P6",
+          "P7"
+        ]
+      }
+    ],
+    "The Thimblerigger": [
+      {
+        "question": "What trick did the swindler use to escape from police? (2/5)",
+        "answers": [
+          "M7",
+          "N7"
+        ]
+      },
+      {
+        "question": "What are the duties of three other members of the gang and where are their headquarters? (3/5)",
+        "answers": [
+          "N5",
+          "J7",
+          "K7",
+          "P5"
+        ]
+      },
+      {
+        "question": "At the depot: which bin is the swindler in? (4/5)",
+        "answers": [
+          "N8",
+          "P7",
+          "P5"
+        ]
+      },
+      {
+        "question": "At the depot: which bin has the money sack inside? (5/5)",
+        "answers": [
+          "K5",
+          "J7"
+        ]
+      }
+    ],
+    "Tut-an-carmen": [
+      {
+        "question": "What happened at the exhibition? (2/8)",
+        "answers": [
+          "N6"
+        ]
+      },
+      {
+        "question": "Who delivered the sarcophagus? (3/8)",
+        "answers": [
+          "N6"
+        ]
+      },
+      {
+        "question": "What went wrong with the delivery from overseas? (4/8)",
+        "answers": [
+          "K5"
+        ]
+      },
+      {
+        "question": "Where did the two pull the sarcophagus out of the water? (5/8)",
+        "answers": [
+          "J5",
+          "K6"
+        ]
+      },
+      {
+        "question": "What did the pair see on their escape from the city? (6/8)",
+        "answers": [
+          "M5",
+          "N5"
+        ]
+      },
+      {
+        "question": "Where did the two of them get the replacement? (7/8)",
+        "answers": [
+          "I6",
+          "J6"
+        ]
+      },
+      {
+        "question": "Where did the real mummy turn up? (8/8)",
+        "answers": [
+          "I5"
+        ]
+      }
+    ],
+    "Wild Catch": [
+      {
+        "question": "Where was the mother with her daughter earlier? (2/6)",
+        "answers": [
+          "K8"
+        ]
+      },
+      {
+        "question": "What happened to the other family members? (3/6)",
+        "answers": [
+          "K8"
+        ]
+      },
+      {
+        "question": "What caused the illness? (4/6)",
+        "answers": [
+          "K8"
+        ]
+      },
+      {
+        "question": "Where did the fish come from? (5/6)",
+        "answers": [
+          "K5"
+        ]
+      },
+      {
+        "question": "Why was the fish so toxic? (6/6)",
+        "answers": [
+          "P7"
+        ]
+      }
+    ]
+  }
 }
+        
 
-function resetQuiz() {
-    currentQuestion = 0;
-    document.getElementById('question-header').innerText = "Question 1:";
-    document.querySelector('.question-wrapper').innerText = answerData[selectedGame][selectedCase][0].question;
-    document.getElementById('coordinate-input').value = "";
-    document.getElementById('result').innerText = "";
-    document.getElementById('check-answer-btn').style.display = "block"; // Show the Check Answer button
-    document.getElementById('skip-question').style.display = "block"; // Show the Skip Question option
-    document.getElementById('see-answer').style.display = "block"; // Show the See Answer option
-    document.getElementById('next-question-btn').style.display = "none"; // Hide the Next Question button
-    updateNavigationButtons();
-}
+let currentQuestion = 0;
+    const gameSelect = document.getElementById('game-select');
+    const caseSelect = document.getElementById('case-select');
+    const questionHeader = document.getElementById('question-header');
+    const questionWrapper = document.querySelector('.question-wrapper');
 
-function moveToNextQuestion() {
-    currentQuestion++;
-    if (currentQuestion < answerData[selectedGame][selectedCase].length) {
-        updateQuestion();
-    } else {
-        document.getElementById('question-header').innerText = "";
-        document.querySelector('.question-wrapper').innerHTML = 
-    `<div id="completion-message">Congratulations, you've solved the case!<br>Select a new case to continue the fun!</div>`;
-document.getElementById('coordinate-input').style.display = "none";
-        document.getElementById('check-answer-btn').style.display = "none";
-        document.getElementById('see-answer').style.display = "none";
-        document.getElementById('skip-question').style.display = "none";
-        document.getElementById('next-question-btn').style.display = "none";
-        document.getElementById('previous-question').style.display = "block";
+    document.addEventListener('DOMContentLoaded', function () {
+        populateGameSelect();
+    });
+
+    // Function to populate game-select based on answerData keys
+    function populateGameSelect() {
+        gameSelect.innerHTML = ''; // Clear existing options
+        const games = Object.keys(answerData); // Get all game names (keys in answerData)
+
+        games.forEach(game => {
+            const option = document.createElement('option');
+            option.value = game;
+            option.textContent = game; // Use the game name as the option text
+            gameSelect.appendChild(option);
+        });
+
+        // Automatically populate the first case for the first game
+        if (games.length > 0) {
+            gameSelect.value = games[0];
+            populateCaseSelect();
+        }
     }
-}
 
+    // Function to populate case-select based on the selected game
+    function populateCaseSelect() {
+        const selectedGame = gameSelect.value;
+        const cases = Object.keys(answerData[selectedGame] || {});
+        caseSelect.innerHTML = ''; // Clear existing options
+        cases.forEach(caseName => {
+            const option = document.createElement('option');
+            option.value = caseName;
+            option.textContent = caseName;
+            caseSelect.appendChild(option);
+        });
+        resetQuiz(); // Update the question based on the first case
+    }
 
+    // Reset the quiz and update the first question
+    function resetQuiz() {
+        currentQuestion = 0;
+        updateQuestion();
+    }
 
-        function updateNavigationButtons() {
-            // Show or hide the "Back to Previous Question" link
-            if (currentQuestion > 0) {
-                document.getElementById('previous-question').style.display = 'block';
-            } else {
-                document.getElementById('previous-question').style.display = 'none';
-            }
+    // Update the question header and wrapper based on the current game, case, and question
+    function updateQuestion() {
+        const selectedGame = gameSelect.value;
+        const selectedCase = caseSelect.value;
+        const questionData = answerData[selectedGame]?.[selectedCase]?.[currentQuestion] || {};
+        questionHeader.innerText = `Question ${currentQuestion + 1}:`;
+        questionWrapper.innerText = questionData.question;
+        document.getElementById('coordinate-input').value = '';
+        document.getElementById('result').innerText = '';
+        document.getElementById('check-answer-btn').style.display = 'block';
+        document.getElementById('skip-question').style.display = 'block';
+        document.getElementById('see-answer').style.display = 'block';
+        document.getElementById('next-question-btn').style.display = 'none';
+        updateNavigationButtons();
+
+        // Update helper text
+        const expectedCoordinates = questionData.answers.length;
+        const helperText = expectedCoordinates === 1 
+            ? "Enter 1 coordinate" 
+            : `Enter ${expectedCoordinates} coordinates separated by commas`;
+        document.getElementById('coordinate-helper').textContent = helperText;
+    }
+
+    // Function to clean and standardize user input
+    function cleanInput(input) {
+        return input
+            .toUpperCase() // Convert to uppercase
+            .replace(/[^A-Z0-9,]/g, '') // Remove unexpected characters (keep letters, numbers, and commas)
+            .split(',') // Split input by commas
+            .map(answer => answer.trim()) // Trim each answer
+            .filter(answer => answer !== ""); // Remove empty answers
+    }
+
+    // Function to check if two arrays contain the same elements (ignoring order)
+    function arraysEqual(arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        const sorted1 = arr1.slice().sort();
+        const sorted2 = arr2.slice().sort();
+        return sorted1.every((value, index) => value === sorted2[index]);
+    }
+
+    // Function to check the answer
+    document.getElementById('check-answer-btn').addEventListener('click', function () {
+        const userInput = cleanInput(document.getElementById('coordinate-input').value);
+        const correctAnswers = answerData[gameSelect.value][caseSelect.value][currentQuestion].answers;
+
+        if (arraysEqual(userInput, correctAnswers)) {
+            document.getElementById('result').innerText = "Correct!";
+            document.getElementById('result').style.color = "green";
+            document.getElementById('check-answer-btn').style.display = "none";
+            document.getElementById('skip-question').style.display = "none";
+            document.getElementById('see-answer').style.display = "none";
+            document.getElementById('next-question-btn').style.display = "block";
+        } else {
+            document.getElementById('result').innerText = "Incorrect, try again!";
+            document.getElementById('result').style.color = "red";
         }
+    });
+
+    // Function to move to the next question
+    document.getElementById('next-question-btn').addEventListener('click', function () {
+        moveToNextQuestion();
+    });
+
+    // Function to skip to the next question
+    document.getElementById('skip-question').addEventListener('click', function () {
+        moveToNextQuestion();
+    });
+
+    // Function to show the correct answer(s)
+    document.getElementById('see-answer').addEventListener('click', function () {
+        const correctAnswers = answerData[gameSelect.value][caseSelect.value][currentQuestion].answers.join(', ');
+        document.getElementById('result').innerText = `Answer: ${correctAnswers}`;
+        document.getElementById('result').style.color = "rgb(29, 29, 27)";
+        document.getElementById('result').style.fontFamily = "'Barlow', sans-serif";
+    });
+
+    // Function to go back to the previous question
+    document.getElementById('previous-question').addEventListener('click', function () {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            updateQuestion();
+        }
+    });
+
+    function moveToNextQuestion() {
+        currentQuestion++;
+        const selectedGame = gameSelect.value;
+        const selectedCase = caseSelect.value;
+        if (currentQuestion < answerData[selectedGame][selectedCase].length) {
+            updateQuestion();
+        } else {
+            document.getElementById('question-header').innerText = "";
+            document.querySelector('.question-wrapper').innerHTML =
+                `<div id="completion-message">Congratulations, you've solved the case!<br>Select a new case to continue the fun!</div>`;
+            document.getElementById('coordinate-input').style.display = "none";
+            document.getElementById('check-answer-btn').style.display = "none";
+            document.getElementById('see-answer').style.display = "none";
+            document.getElementById('skip-question').style.display = "none";
+            document.getElementById('next-question-btn').style.display = "none";
+            document.getElementById('previous-question').style.display = "block";
+        }
+    }
+
+    function updateNavigationButtons() {
+        // Show or hide the "Back to Previous Question" link
+        if (currentQuestion > 0) {
+            document.getElementById('previous-question').style.display = 'block';
+        } else {
+            document.getElementById('previous-question').style.display = 'none';
+        }
+    }
+
+    // Event listeners to handle changes in game or case selection
+    gameSelect.addEventListener('change', populateCaseSelect);
+    caseSelect.addEventListener('change', resetQuiz);
+
+    // Initial population of game and case selects
+    populateGameSelect();
     </script>
 
 <!-- Footer -->
